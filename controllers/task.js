@@ -1,26 +1,23 @@
-import Task from "../model/task";
+import Task from "../model/task.js";
 
 
-export const createTask = async(req,res)=>{
-    const{listId}= req.params;
-    const{title,description,duedate,priority} = req.body;
+export const createTask = async (req, res) => {
+    const { listId } = req.params;
+    const { title, description, duedate, priority } = req.body;
 
     try {
-if(!title || !listId)
-{
-    res.status(400).json({message:"Title and Board ID are required"});
+        if (!title || !listId) {
+            return res.status(400).json({ message: "Title and List ID are required" });
+        }
 
-    const newTask = await Task.create({title,description,duedate,priority,listId});
+        const newTask = await Task.create({ title, description, duedate, priority, listId });
 
-    res.status(200).json({message:"Task created Successfully", task:newTask});
-}
-
+        return res.status(201).json({ message: "Task created successfully", task: newTask });
     } catch (error) {
         console.error("Error creating task:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+        return res.status(500).json({ message: "Internal Server Error" });
     }
-}
-
+};
 
 export const deleteTask = async(req,res)=>{
 
@@ -33,9 +30,9 @@ export const deleteTask = async(req,res)=>{
             res.status(400).json({message:"Invalid TaskId"});
         }
 
-        const updatedLists = await List.find().populate("tasks");
+        const updatedLists = await Task.find()
 
-        res.status(200).json({ message: "Task deleted successfully", lists: updatedLists });
+        res.status(200).json({ message: "Task deleted successfully", task: updatedLists });
 
         
 
@@ -74,3 +71,25 @@ res.status(200).json({ message: "Task moved successfully", lists: updatedLists }
 
     
 }
+
+
+
+export const updateTask = async (req, res) => {
+    const { taskId } = req.params;
+    const {priority } = req.body;
+console.log(taskId,priority);
+    try {
+        if (!taskId || !priority) {
+            return res.status(400).json({ message: "priority and task ID are required" });
+        }
+
+        const updatedtask = await Task.findByIdAndUpdate( taskId,
+            { priority },
+            { new: true } );
+
+        return res.status(201).json({ message: "Task created successfully", task: updatedtask });
+    } catch (error) {
+        console.error("Error creating task:", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};

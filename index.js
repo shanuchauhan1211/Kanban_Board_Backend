@@ -4,6 +4,7 @@ import connectDB from "./config/db.js";
 import authRoute from "./routes/auth.js"
 import BoardRouter from "./routes/board.js"
 import ListRouter from "./routes/list.js"
+import TaskRouter from "./routes/task.js"
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoute);
 app.use("/board",BoardRouter);
 app.use("/list",ListRouter);
+app.use("/task",TaskRouter);
 
 const startServer = async () => {
   try {
